@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@privy-io/react-auth": "^3.0.1",
+    "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-progress": "^1.1.7",
     "@worldcoin/mini-apps-ui-kit-react": "^1.0.2",
     "@worldcoin/minikit-js": "latest",

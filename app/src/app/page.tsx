@@ -1,80 +1,46 @@
 import { Page } from "@/components/PageLayout";
-import { AuthButton } from "../components/AuthButton";
-import OnePay from "@/components/OnePay";
-import AddMoney from "@/components/AddMoney";
-import { UserInfo } from "@/components/UserInfo";
-import SendTxExamples from "@/components/SendTxExamples";
-import ShareContacts from "@/components/ShareContacts";
-import GetPermissions from "@/components/GetPermissions";
-import SendHaptics from "@/components/SendHaptics";
-import Share from "@/components/Share";
+
 import PreloaderGate from "@/components/preloader/PreloaderGate";
+import { Navigation } from "@/components/Navigation";
+import { UserProfile } from "@/components/UserProfile";
+import { RewardsSection } from "@/components/RewardsSection";
+
+import { NotificationPermission } from "@/components/NotificationPermission";
+import { HowItWorksModal } from "@/components/HowItWorksModal";
+import { AuthButton } from "@/components/AuthButton";
 
 export default function Home() {
   return (
     <Page>
-      <Page.Main className="flex min-h-[60vh] items-center justify-center p-4">
+      <Page.Main className="relative flex flex-col justify-start px-4 sm:px-6 pt-10 min-h-full pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] w-full">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(82, 97, 255, 0.00) 0%, rgba(82, 97, 255, 0.12) 30.11%, rgba(82, 97, 255, 0.46) 82.11%, #5261FF 100%)",
+            backgroundPosition: "75% center",
+          }}
+        />
         <PreloaderGate>
-          <div className="w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-950/60 p-6 shadow-lg backdrop-blur">
-            <div className="space-y-4 text-center">
-              <div className="mt-2 grid justify-items-center gap-3">
+          <div className="w-full">
+            <div className="space-y-6 text-center">
+              <div className="mt-2 grid justify-items-center gap-6">
                 <div className="w-full">
-                  <UserInfo />
+                  <UserProfile />
                 </div>
                 <div className="w-[240px]">
                   <AuthButton />
                 </div>
-                <div className="w-[240px]">
-                  <OnePay
-                    appId={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
-                    recipient={
-                      process.env.NEXT_PUBLIC_MERCHANT_ADDRESS as `0x${string}`
-                    }
-                    amountUSDC={
-                      process.env.NEXT_PUBLIC_ONEPAY_AMOUNT_USDC || "1"
-                    }
-                  />
-                </div>
-                <div className="w-[240px]">
-                  <AddMoney
-                    appId={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
-                    toAddress={
-                      process.env.NEXT_PUBLIC_ADD_MONEY_TO as `0x${string}`
-                    }
-                    toToken={
-                      process.env.NEXT_PUBLIC_ADD_MONEY_TOKEN as `0x${string}`
-                    }
-                    amountUsd={
-                      process.env.NEXT_PUBLIC_ADD_MONEY_AMOUNT_USD || "100"
-                    }
-                    sourceAppId={
-                      process.env.NEXT_PUBLIC_APP_ID as `app_${string}`
-                    }
-                    sourceAppName={
-                      process.env.NEXT_PUBLIC_SOURCE_APP_NAME || "My App"
-                    }
-                    sourceDeeplinkPath={"/"}
-                  />
-                </div>
-                <div className="w-full pt-2">
-                  <SendTxExamples />
-                </div>
-                <div className="w-full pt-2">
-                  <ShareContacts />
-                </div>
-                <div className="w-full pt-2">
-                  <GetPermissions />
-                </div>
-                <div className="w-full pt-2">
-                  <SendHaptics />
-                </div>
-                <div className="w-full pt-2">
-                  <Share />
+                <div className="w-full">
+                  <RewardsSection />
+                  <HowItWorksModal />
                 </div>
               </div>
             </div>
           </div>
         </PreloaderGate>
+        <NotificationPermission />
+        <Navigation />
       </Page.Main>
     </Page>
   );

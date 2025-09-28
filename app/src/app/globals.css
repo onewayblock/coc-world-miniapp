@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -19,8 +19,392 @@
   }
 }
 
+/* WebView compatibility fixes */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  height: 100dvh;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Box-sizing fix for consistent rendering */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+.frame-border {
+  position: relative;
+}
+
+.frame-border::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  width: calc(100% + 0.25rem);
+  height: calc(100% + 0.25rem);
+  left: -0.125rem;
+  top: -0.125rem;
+  background: linear-gradient(to right, #fff 2px, transparent 2px) 0 0,
+    linear-gradient(to right, #fff 2px, transparent 2px) 0 100%,
+    linear-gradient(to left, #fff 2px, transparent 2px) 100% 0,
+    linear-gradient(to left, #fff 2px, transparent 2px) 100% 100%,
+    linear-gradient(to bottom, #fff 2px, transparent 2px) 0 0,
+    linear-gradient(to bottom, #fff 2px, transparent 2px) 100% 0,
+    linear-gradient(to top, #fff 2px, transparent 2px) 0 100%,
+    linear-gradient(to top, #fff 2px, transparent 2px) 100% 100%;
+  background-repeat: no-repeat;
+  background-size: 8px 8px;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: "Jura", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: white;
+  transition: all 0.15s ease;
+  outline: none;
+  border: none;
+  text-decoration: none;
+}
+
+.btn:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Button Variants */
+.btn-buyGreen {
+  padding: 0.5rem;
+  font-family: "Jura", sans-serif;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: black !important;
+  background-color: #46e066 !important;
+  border: 1px solid #99ffae;
+  box-shadow: inset 0px 0px 18.7px 0px rgba(28, 192, 242, 0.46);
+  min-height: 47px;
+}
+
+.btn-buyGreen:hover {
+  background-color: #4fff75 !important;
+}
+
+.btn-buyGreen:disabled {
+  background-color: #1d1f2b !important;
+  color: #3b4059 !important;
+  border-color: #1d1f2b;
+  box-shadow: none;
+}
+
+.btn-blue {
+  padding: 0.5rem;
+  font-family: "Jura", sans-serif;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: white !important;
+  background-color: #1c67ff !important;
+  border: 1px solid #0863ff;
+  box-shadow: inset 0px 0px 18.7px 0px rgba(32, 255, 255, 0.3);
+  min-height: 47px;
+}
+
+.btn-blue:hover {
+  background-color: #1c67ff !important;
+}
+
+.btn-blue:disabled {
+  background-color: #1d1f2b !important;
+  color: #464b6b !important;
+  border: none;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  background-color: transparent !important;
+  color: white !important;
+  border: none;
+  padding: 0.5rem;
+  min-height: 36px;
+  min-width: 36px;
+}
+
+.btn-ghost:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #d1d5db !important;
+}
+
+/* Button Sizes */
+.btn-size-default {
+  height: 47px;
+}
+
+.btn-size-icon {
+  height: 36px;
+  width: 36px;
+}
+
+/* Additional Button Variants */
+.btn-link {
+  color: #3b82f6;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+.btn-active {
+  width: 100%;
+  border: 1px solid white;
+  text-transform: uppercase;
+  font-weight: bold;
+  background-color: white;
+  color: black;
+}
+
+.btn-active:hover {
+  color: black;
+}
+
+.btn-notActive {
+  background-color: #171719;
+  color: #aaaaaa;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-notActive:hover {
+  background-color: rgba(16, 16, 18, 0.9);
+}
+
+.btn-login {
+  width: 100%;
+  border: 1px solid #39393f;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  font-weight: bold;
+  background: none;
+  color: white;
+}
+
+.btn-login:hover {
+  background-color: white;
+  color: black;
+}
+
+.btn-default {
+  background-color: #ffffff;
+  color: #171717;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-default:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.btn-secondary {
+  background-color: #39393f;
+  color: hsl(240 5.9% 10%);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(57, 57, 63, 0.8);
+}
+
+.btn-error {
+  width: 100%;
+  font-family: "Jura", sans-serif;
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  background-color: #fc4242;
+  border: 1px solid #ff3b3b;
+  box-shadow: inset 0 0 10px rgba(161, 17, 20, 0.58);
+}
+
+.btn-orange {
+  background-color: #fc800a;
+}
+
+.btn-purple {
+  background-color: #ba2ef7;
+}
+
+.btn-yellow {
+  font-family: "Jura", sans-serif;
+  background-color: #fff151;
+  border: 1px solid #ffb056;
+  color: black;
+  font-size: 1.25rem;
+  font-weight: bold;
+  box-shadow: inset 0 2px 15px rgba(255, 176, 86, 0.75);
+}
+
+.btn-yellow:hover {
+  background-color: #fff79b;
+}
+
+.btn-yellow:disabled {
+  background-color: #1d1f2b;
+  color: #3b4059;
+  border-color: #1d1f2b;
+  box-shadow: none;
+}
+
+.btn-disconnect {
+  font-family: "Jura", sans-serif;
+  font-size: 0.875rem;
+  font-weight: bold;
+  color: black;
+  background-color: #858fbc;
+  border: 1px solid #7d8bc7;
+  box-shadow: inset 0 2px 15px rgba(71, 80, 117, 0.75);
+}
+
+.btn-darkViolet {
+  background-color: #770afc;
+}
+
+.btn-green {
+  background-color: #9ecf25;
+}
+
+.btn-white {
+  width: 100%;
+  border: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.25rem;
+  background-color: white;
+  color: black;
+  border-radius: 0;
+}
+
+.btn-red {
+  background-color: #ff5a5d;
+}
+
+.btn-buyBlue {
+  padding: 0.5rem;
+  font-family: "Jura", sans-serif;
+  font-weight: bold;
+  color: black;
+  background-color: #20cbff;
+  border: 1px solid #adcaff;
+  box-shadow: inset 0px 0px 18.7px 0px rgba(63, 77, 255, 1);
+}
+
+.btn-buyBlue:hover {
+  background-color: #39cdfa;
+  box-shadow: inset 0px 0px 18.7px 0px rgba(63, 77, 255, 0.8);
+}
+
+.btn-success {
+  background-color: #20cbff;
+  color: black;
+  border: 1px solid #adcaff;
+  box-shadow: inset 0px 0px 18.7px 0px rgba(63, 77, 255, 1);
+}
+
+.btn-success:hover {
+  background-color: #39cdfa;
+  box-shadow: inset 0px 0px 18.7px 0px rgba(63, 77, 255, 0.8);
+}
+
+.btn-signIn {
+  border: 1px solid #32458a;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.25rem;
+  background-color: #121827;
+  color: white;
+}
+
+.btn-inactive {
+  font-family: "Jura", sans-serif;
+  background-color: #2e334c;
+  border: 1px solid #2e334c;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: white;
+}
+
+.btn-bonusTimer {
+  padding: 0.5rem;
+  font-family: "Jura", sans-serif;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #f386ff;
+  border: 1px solid #a05fb4;
+  background-color: rgba(160, 95, 180, 0.14);
+}
+
+.btn-claimed {
+  text-transform: uppercase;
+  font-family: "Jura", sans-serif;
+  background-color: black;
+  color: #26ff54;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Additional Button Sizes */
+.btn-size-h15 {
+  height: 58px;
+}
+
+.btn-size-sm {
+  height: 32px;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 0.75rem;
+}
+
+.btn-size-lg {
+  height: 40px;
+  border-radius: 6px;
+  padding: 0 32px;
+}
+
+.btn-size-xl {
+  font-size: 1.5rem;
+}
+
+.btn-size-h13 {
+  height: 52px;
 }
