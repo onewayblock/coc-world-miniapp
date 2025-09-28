@@ -23,14 +23,15 @@ export default function Home() {
         />
         <PreloaderGate>
           <div className="w-full">
-            <div className="space-y-6 text-center">
-              <div className="mt-2 grid justify-items-center gap-6">
+            <div className="space-y-4">
+              <div className="mt-2 flex flex-col gap-4">
                 <div className="w-full">
                   <UserProfile />
                 </div>
-                <div className="w-[240px]">
+                <div className="w-full flex justify-start">
                   <AuthButton />
                 </div>
+
                 <div className="w-full">
                   <RewardsSection />
                   <HowItWorksModal />

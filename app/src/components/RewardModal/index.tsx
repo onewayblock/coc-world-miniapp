@@ -1,7 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import clsx from "clsx";
+
 import { Button } from "@/shared/ui/button";
+import { MiniKit } from "@worldcoin/minikit-js";
+import { useMiniKit } from "@worldcoin/minikit-js/minikit-provider";
+import BONUS_CLAIM_ABI from "@/shared/abi/BonusClaim.json";
 
 interface RewardModalProps {
   open: boolean;
@@ -10,9 +14,36 @@ interface RewardModalProps {
 
 type Status = "none" | "pending" | "success" | "claimError";
 
+// Адрес контракта BonusClaim
+const BONUS_CLAIM_CONTRACT_ADDRESS =
+  "0x33ed42a640c33c2b7979b42b497a4dd3549088ed";
+
 export function RewardModal({ open, onOpenChange }: RewardModalProps) {
   const [status, setStatus] = useState<Status>("none");
-  const [connectedWallet] = useState(true); // Mock: wallet connected
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const { isInstalled } = useMiniKit();
+
+  useEffect(() => {
+    const getWalletAddress = async () => {
+      if (isInstalled) {
+        try {
+          const user = await MiniKit.getUserByAddress("current");
+          if (user?.walletAddress) {
+            setWalletAddress(user.walletAddress);
+          }
+        } catch (err) {
+          console.error("Error getting wallet address:", err);
+        }
+      }
+    };
+
+    if (open) {
+      getWalletAddress();
+    } else {
+      // Сброс состояния при закрытии модального окна
+      setStatus("none");
+    }
+  }, [open, isInstalled]);
 
   // Mock data
   const offer = {
@@ -27,8 +58,6 @@ export function RewardModal({ open, onOpenChange }: RewardModalProps) {
     ],
     activityPoints: 50,
   };
-
- 
 
   const getTitle = () => {
     const nameToTitle = {
@@ -47,9 +76,6 @@ export function RewardModal({ open, onOpenChange }: RewardModalProps) {
     if (offer.items?.[0].type === "SOFT_CURRENCY") {
       return (
         <div className="flex items-center gap-1 justify-center">
-          <div className="lg:w-6 lg:h-6 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-            <span className="text-black font-bold text-xs">$</span>
-          </div>
           <p className="text-white lg:text-2xl text-lg font-bold uppercase text-center">
             {formatNumber(offer.items?.[0].amount || 0)} UNITS
           </p>
@@ -83,12 +109,43 @@ export function RewardModal({ open, onOpenChange }: RewardModalProps) {
     return str.substring(0, length) + "...";
   };
 
-  const handleClaim = () => {
+  const handleClaim = async () => {
+    if (!isInstalled) {
+      setStatus("claimError");
+      return;
+    }
+
     setStatus("pending");
-    // Mock claim process
-    setTimeout(() => {
+
+    try {
+      console.log("Starting bonus claim...");
+
+      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            address: BONUS_CLAIM_CONTRACT_ADDRESS,
+            abi: BONUS_CLAIM_ABI.abi,
+            functionName: "claimBonusForVerifiedUser",
+            args: [],
+          },
+        ],
+      });
+
+      if (finalPayload.status === "error") {
+        console.error("Transaction failed:", finalPayload);
+        setStatus("claimError");
+        return;
+      }
+
+      console.log("Transaction successful:", finalPayload);
+      if (finalPayload.transaction_id) {
+        console.log("Transaction ID:", finalPayload.transaction_id);
+      }
       setStatus("success");
-    }, 2000);
+    } catch (err) {
+      console.error("Error claiming bonus:", err);
+      setStatus("claimError");
+    }
   };
 
   const renderNotification = () => {
@@ -117,15 +174,14 @@ export function RewardModal({ open, onOpenChange }: RewardModalProps) {
   };
 
   const renderButton = () => {
-    if (!connectedWallet) {
+    if (!isInstalled) {
       return (
         <Button
           variant="blue"
           size="default"
           className="min-w-[260px] uppercase"
           onClick={() => {
-            // Mock wallet connection
-            console.log("Connect wallet");
+            console.log("Please open in World App to connect wallet");
           }}
         >
           connect wallet
@@ -221,37 +277,32 @@ export function RewardModal({ open, onOpenChange }: RewardModalProps) {
           <div className="max-w-[340px] text-center mt-2 flex-1 flex flex-col items-center justify-between">
             <div className="w-full">
               <span className="w-full text-[#6F7CB5] uppercase text-sm md:text-base">
-                Free drop. Free points. Every {getDuration(offer.name!)}. If you
-                miss it, someone else won&apos;t.
+                One-time drop. Free points. Every {getDuration(offer.name!)}. If
+                you miss it, someone else won&apos;t.
               </span>
 
               {offer.id !== "3" ? (
                 <div className="w-full flex justify-between items-center uppercase text-xl mt-5">
-                  <span className="text-[#6F7CB5]">units</span>
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-                      <span className="text-black font-bold text-xs">$</span>
-                    </div>
+                  <span className="text-white">units</span>
+                  <span className="text-white">
                     {formatNumber(offer.items?.[0].amount || 0)}
                   </span>
                 </div>
               ) : (
                 <div className="w-full flex justify-between items-center uppercase text-xl mt-5">
-                  <span className="text-[#6F7CB5]">INCOME UNITS</span>
-                  <span className="flex items-center justify-center gap-2">
-                    + 30%
-                  </span>
+                  <span className="text-white">INCOME UNITS</span>
+                  <span className="text-white">+ 30%</span>
                 </div>
               )}
 
               <div className="w-full flex justify-between items-center uppercase text-xl mt-[10px]">
-                <span className="text-[#6F7CB5]">activity points</span>
+                <span className="text-white">activity points</span>
                 <span className="flex items-center justify-center gap-2">
-                  {offer.activityPoints} AP
+                  <span className="text-white">{offer.activityPoints} AP</span>
                 </span>
               </div>
 
-              {connectedWallet && (
+              {walletAddress && (
                 <div className="w-full flex flex-col items-center gap-3">
                   <span className="uppercase text-base md:text-xl leading-[32px] font-semibold">
                     wallet
@@ -265,7 +316,9 @@ export function RewardModal({ open, onOpenChange }: RewardModalProps) {
                         your wallet:
                       </span>
                       <span className="flex items-center justify-center gap-2">
-                        {truncatedString("0x1234...5678", 16)}
+                        {walletAddress
+                          ? truncatedString(walletAddress, 16)
+                          : "0x1234...5678"}
                       </span>
                     </div>
 

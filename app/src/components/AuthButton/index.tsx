@@ -57,22 +57,24 @@ export const AuthButton = () => {
   }, [isInstalled, isPending]);
 
   return (
-    <LiveFeedback
-      label={{
-        failed: "Failed to login",
-        pending: "Logging in",
-        success: "Logged in",
-      }}
-      state={isPending ? "pending" : undefined}
-    >
-      <Button
-        onClick={onClick}
-        disabled={isPending}
-        size="lg"
-        variant="primary"
+    <div className="w-full flex justify-start">
+      <LiveFeedback
+        label={{
+          failed: "Failed to login",
+          pending: "Logging in",
+          success: "Logged in",
+        }}
+        state={isPending ? "pending" : undefined}
       >
-        {jwt ? "Connected ✅" : "Login with Wallet"}
-      </Button>
-    </LiveFeedback>
+        <Button
+          onClick={onClick}
+          disabled={isPending}
+          size="lg"
+          variant="primary"
+        >
+          {jwt ? "Connected ✅" : "Login with Wallet"}
+        </Button>
+      </LiveFeedback>
+    </div>
   );
 };
